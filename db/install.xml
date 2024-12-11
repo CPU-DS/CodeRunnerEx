@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<XMLDB PATH="question/type/coderunnerex/db" VERSION="20241101" COMMENT="XMLDB file for Moodle question/type/coderunnerex"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="../../../../lib/xmldb/xmldb.xsd"
+>
+  <TABLES>
+    <TABLE NAME="qtype_coderunnerex" COMMENT="Default comment for qtype_coderunnerex, please edit me">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="question_crex_chelp_steps" COMMENT="Stores one step in in a question code helper. As well as the data here, the step will have some data in the question_crex_chelp_step_data table.">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="questionattemptid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Foreign key, references question_attempt.id"/>
+        <FIELD NAME="questionattemptstepid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="sequencenumber" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="Numbers the steps in a code helper request sequentially. (Unused now)"/>
+        <FIELD NAME="state" TYPE="char" LENGTH="13" NOTNULL="false" SEQUENCE="false" COMMENT="One of the constants defined by the question_state class, giving the state of the question at the end of this code helper step. (not used now)"/>
+        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Time-stamp of the action that lead to this state being created."/>
+        <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="The user whose action lead to this state being created."/>
+        <FIELD NAME="reqhash" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="Hash code of this step of request data (including user code, user question, etc.), to locate a step quickly."/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="questionattemptid" TYPE="foreign" FIELDS="questionattemptid" REFTABLE="question_attempts" REFFIELDS="id"/>
+        <KEY NAME="userid" TYPE="foreign" FIELDS="userid" REFTABLE="user" REFFIELDS="id"/>
+        <KEY NAME="questionattemptstepid" TYPE="foreign" FIELDS="questionattemptstepid" REFTABLE="question_attempt_steps" REFFIELDS="id"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="reqhash" UNIQUE="false" FIELDS="reqhash"/>
+      </INDEXES>
+    </TABLE>
+    <TABLE NAME="question_crex_chelp_stepdata" COMMENT="Assoc data of coderunner-ex code helper steps.">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="stepid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Foreign key, references question_crex_chelp_steps.id"/>
+        <FIELD NAME="name" TYPE="char" LENGTH="32" NOTNULL="true" SEQUENCE="false" COMMENT="The name of this bit of data."/>
+        <FIELD NAME="value" TYPE="text" NOTNULL="true" SEQUENCE="false" COMMENT="The corresponding value."/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="stepid" TYPE="foreign" FIELDS="stepid" REFTABLE="question_crex_chelp_steps" REFFIELDS="id"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="stepid_and_name" UNIQUE="true" FIELDS="stepid, name"/>
+      </INDEXES>
+    </TABLE>
+    <TABLE NAME="question_crex_props" COMMENT="Additional properties and options for coderunner-ex question.">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="questionid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Foreign key of question.id."/>
+        <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="The name of this bit of data."/>
+        <FIELD NAME="value" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="The corresponding value."/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="questionid" TYPE="foreign" FIELDS="questionid" REFTABLE="question" REFFIELDS="id"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="questionid_and_name" UNIQUE="true" FIELDS="questionid, name"/>
+      </INDEXES>
+    </TABLE>
+    <TABLE NAME="question_crex_test_props" COMMENT="Additional properties and options for coderunner-ex question testcases.">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="testid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Foreign key of question_coderunner_tests.id."/>
+        <FIELD NAME="name" TYPE="char" LENGTH="32" NOTNULL="true" SEQUENCE="false" COMMENT="The name of this bit of data."/>
+        <FIELD NAME="value" TYPE="text" NOTNULL="true" SEQUENCE="false" COMMENT="The corresponding value."/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="testid" TYPE="foreign" FIELDS="testid" REFTABLE="question_coderunner_tests" REFFIELDS="id"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="test_propname" UNIQUE="true" FIELDS="testid, name"/>
+      </INDEXES>
+    </TABLE>
+  </TABLES>
+</XMLDB>

@@ -1,0 +1,399 @@
+.CodeRunnerEx-CodeHelper {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    grid-template-columns: auto 1fr;
+    grid-template-areas:
+        "input input"
+        "main  main";
+
+    position: relative;
+    margin: 0.5rem 0;
+    padding: 0.4rem;
+}
+.CodeRunnerEx-CodeHelper.Collapsed {
+    padding: 0;
+}
+.CodeRunnerEx-CodeHelper.SimpleMode.Collapsed {
+    grid-template-rows: auto 1fr;
+    grid-template-columns: auto auto 1fr;
+    grid-template-areas:
+        "input toggler  -"
+        "main  main     main";
+}
+.CodeRunnerEx-CodeHelper.SimpleMode.Expanded {
+    grid-template-rows: auto 1fr;
+    grid-template-columns: auto 1fr;
+    grid-template-areas:
+        "input -"
+        "main  main";
+}
+
+.CodeRunnerEx-CodeHelper .InputSection {
+    grid-area: input;
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    z-index: 10;
+}
+.CodeRunnerEx-CodeHelper.SimpleMode .InputSection {
+    align-items: self-start;
+}
+.CodeRunnerEx-CodeHelper .InputSection .QInputContainer {
+    flex: 1 1 auto;
+    z-index: 10;
+}
+.CodeRunnerEx-CodeHelper .InputSection .QInput {
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    border-radius: 0;
+}
+.CodeRunnerEx-CodeHelper .InputSection .InputSubmitter {
+    flex: 0 0 auto;
+}
+.CodeRunnerEx-CodeHelper .InputSection .btn {
+    margin: 0;
+}
+
+.CodeRunnerEx-CodeHelper.NormalMode.Expanded .InputSection > *:nth-child(n+2) {
+    border-start-start-radius: 0;
+    border-end-start-radius: 0;
+}
+.CodeRunnerEx-CodeHelper.NormalMode.Expanded .InputSection > *:nth-last-child(n+2) {
+    border-start-end-radius: 0;
+    border-end-end-radius: 0;
+}
+
+.CodeRunnerEx-CodeHelper .Responder {
+    grid-area: main;
+    display: block;
+    height: 30em;
+    max-height: unset;
+    box-sizing: border-box;
+    resize: vertical;
+    overflow: auto;
+    margin: 0.5rem 0 1rem 0;
+    z-index: 10;
+}
+.CodeRunnerEx-CodeHelper .ResponderContent {
+    white-space: pre-wrap;
+    scroll-behavior: smooth;
+    max-width: 60em;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.CodeRunnerEx-CodeHelper .ResponderContent .ResponderSection {
+    margin: 0.5rem 0.5rem;
+}
+
+.CodeRunnerEx-CodeHelper .ResponderContent .ResponderSection .UserQuestion,
+.CodeRunnerEx-CodeHelper .ResponderContent .ResponderSection .Response {
+    display: block;
+    clear: both;
+}
+
+.CodeRunnerEx-CodeHelper .ResponderContent .ResponderSection .UserQuestion {
+    float: left;
+    margin-right: auto;
+}
+.CodeRunnerEx-CodeHelper .ResponderContent .ResponderSection .UserQuestion.Hide {
+    display: none;
+}
+
+.CodeRunnerEx-CodeHelper .ResponderContent .ResponderSection .Response {
+    font-family: 'Courier New', Monospace;   /* for displaying code in simple response */
+    padding-left: 2em;
+}
+
+/* structurized response */
+.CodeRunnerEx-CodeHelper .ResponderContent .ResponderSection .Response .ResponseSection {
+    font-family: 'Segoe UI Symbol', Tahoma, Arial, Helvetica, sans-serif;
+    margin: 1em 0;
+}
+.CodeRunnerEx-CodeHelper .ResponderContent .ResponderSection .Response .ResponseSection .ResponseSectionTitle {
+    font-size: 1.15em;
+}
+.CodeRunnerEx-CodeHelper .ResponderContent .ResponderSection .Response .ResponseSection .ResponseSectionContent {
+    font-size: 1em;
+}
+.CodeRunnerEx-CodeHelper .ResponderContent .ResponderSection .Response .ResponseSection .ResponseSectionCode {
+    font-family: 'Courier New', Monospace;
+    white-space: pre;
+}
+
+.CodeRunnerEx-CodeHelper .ResponderContent .ResponderSection .Response .ResponseSection .ace_editor {
+    border-radius: 0.5em;
+}
+
+.CodeRunnerEx-CodeHelper .ResponderContent .ResponderSection.Rejected .Response {
+    color: #fc4b4b;
+}
+.CodeRunnerEx-CodeHelper .ResponderContent .ResponderSection .Response::after {
+    display: none;
+}
+
+@keyframes CircleLoading {
+    0% {
+        transform: rotate(0);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+.CodeRunnerEx-CodeHelper .ResponderContent .ResponderSection.Pending .Response::after {
+    display: block;
+    content: '';
+    width: 1.5em;
+    height: 1.5em;
+    padding: 0;
+    margin: 0.5em;
+    margin-right: auto;
+    background-image: url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBzdGFuZGFsb25lPSJubyI/PjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+PHN2ZyB0PSIxNzMwNTQ4NjcxOTg2IiBjbGFzcz0iaWNvbiIgdmlld0JveD0iMCAwIDEwMjQgMTAyNCIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHAtaWQ9IjIwMzEzIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgd2lkdGg9IjIwMCIgaGVpZ2h0PSIyMDAiPjxwYXRoIGQ9Ik04NzYuODY0IDc4Mi41OTJjMy4yNjQgMCA2LjI3Mi0zLjIgNi4yNzItNi42NTYgMC0zLjQ1Ni0zLjAwOC02LjU5Mi02LjI3Mi02LjU5Mi0zLjI2NCAwLTYuMjcyIDMuMi02LjI3MiA2LjU5MiAwIDMuNDU2IDMuMDA4IDYuNjU2IDYuMjcyIDYuNjU2eiBtLTE0MC41NDQgMTUzLjM0NGMyLjMwNCAyLjQzMiA1LjU2OCAzLjg0IDguNzY4IDMuODRhMTIuMTYgMTIuMTYgMCAwIDAgOC44MzItMy44NCAxMy43NiAxMy43NiAwIDAgMCAwLTE4LjU2IDEyLjIyNCAxMi4yMjQgMCAwIDAtOC44MzItMy44NCAxMi4xNiAxMi4xNiAwIDAgMC04Ljc2OCAzLjg0IDEzLjY5NiAxMy42OTYgMCAwIDAgMCAxOC41NnpNNTUyLjMyIDEwMTguMjRjMy40NTYgMy42NDggOC4zMiA1Ljc2IDEzLjE4NCA1Ljc2YTE4LjM2OCAxOC4zNjggMCAwIDAgMTMuMTg0LTUuNzYgMjAuNjA4IDIwLjYwOCAwIDAgMCAwLTI3Ljk2OCAxOC4zNjggMTguMzY4IDAgMCAwLTEzLjE4NC01LjgyNCAxOC4zNjggMTguMzY4IDAgMCAwLTEzLjE4NCA1Ljc2IDIwLjYwOCAyMC42MDggMCAwIDAgMCAyOC4wMzJ6IG0tMTk4LjMzNi01Ljc2YzQuNjA4IDQuOCAxMS4wNzIgNy42OCAxNy42IDcuNjhhMjQuNDQ4IDI0LjQ0OCAwIDAgMCAxNy41MzYtNy42OCAyNy40NTYgMjcuNDU2IDAgMCAwIDAtMzcuMjQ4IDI0LjQ0OCAyNC40NDggMCAwIDAtMTcuNTM2LTcuNjggMjQuNDQ4IDI0LjQ0OCAwIDAgMC0xNy42IDcuNjggMjcuNTIgMjcuNTIgMCAwIDAgMCAzNy4xODR6IG0tMTc1LjY4LTkxLjg0YzUuNzYgNi4wOCAxMy44MjQgOS42IDIxLjk1MiA5LjZhMzAuNTkyIDMwLjU5MiAwIDAgMCAyMi4wMTYtOS42IDM0LjM2OCAzNC4zNjggMCAwIDAgMC00Ni41OTIgMzAuNTkyIDMwLjU5MiAwIDAgMC0yMi4wMTYtOS42IDMwLjU5MiAzMC41OTIgMCAwIDAtMjEuOTUyIDkuNiAzNC4zNjggMzQuMzY4IDAgMCAwIDAgNDYuNTkyeiBtLTEyMS4xNTItMTU5LjM2YzYuOTEyIDcuMzYgMTYuNjQgMTEuNjQ4IDI2LjM2OCAxMS42NDhhMzYuNzM2IDM2LjczNiAwIDAgMCAyNi40MzItMTEuNTg0IDQxLjI4IDQxLjI4IDAgMCAwIDAtNTUuOTM2IDM2LjczNiAzNi43MzYgMCAwIDAtMjYuNDMyLTExLjU4NCAzNi44IDM2LjggMCAwIDAtMjYuMzY4IDExLjUyIDQxLjI4IDQxLjI4IDAgMCAwIDAgNTZ6TTEyLjczNiA1NjQuNjcyYTQyLjg4IDQyLjg4IDAgMCAwIDMwLjc4NCAxMy40NCA0Mi44OCA0Mi44OCAwIDAgMCAzMC43ODQtMTMuNDQgNDguMTI4IDQ4LjEyOCAwIDAgMCAwLTY1LjIxNiA0Mi44OCA0Mi44OCAwIDAgMC0zMC43Mi0xMy40NCA0Mi44OCA0Mi44OCAwIDAgMC0zMC44NDggMTMuNDQgNDguMTI4IDQ4LjEyOCAwIDAgMCAwIDY1LjIxNnogbTM5LjgwOC0xOTUuMzkyYTQ4Ljk2IDQ4Ljk2IDAgMCAwIDM1LjIgMTUuMzYgNDguOTYgNDguOTYgMCAwIDAgMzUuMi0xNS4zNiA1NC45NzYgNTQuOTc2IDAgMCAwIDAtNzQuNTYgNDguOTYgNDguOTYgMCAwIDAtMzUuMi0xNS40MjQgNDguOTYgNDguOTYgMCAwIDAtMzUuMiAxNS40MjQgNTQuOTc2IDU0Ljk3NiAwIDAgMCAwIDc0LjU2ek0xNjguMzIgMjEyLjQ4YzEwLjM2OCAxMS4wMDggMjQuOTYgMTcuNDA4IDM5LjY4IDE3LjQwOCAxNC41OTIgMCAyOS4xODQtNi40IDM5LjU1Mi0xNy40MDhhNjEuODg4IDYxLjg4OCAwIDAgMCAwLTgzLjg0IDU1LjEwNCA1NS4xMDQgMCAwIDAtMzkuNjE2LTE3LjQwOGMtMTQuNjU2IDAtMjkuMjQ4IDYuNC0zOS42MTYgMTcuNDA4YTYxLjg4OCA2MS44ODggMCAwIDAgMCA4My44NHpNMzM3LjM0NCAxMjQuOGMxMS41MiAxMi4xNiAyNy43MTIgMTkuMjY0IDQzLjk2OCAxOS4yNjQgMTYuMjU2IDAgMzIuNDQ4LTcuMDQgNDMuOTY4LTE5LjI2NGE2OC42NzIgNjguNjcyIDAgMCAwIDAtOTMuMTg0IDYxLjI0OCA2MS4yNDggMCAwIDAtNDMuOTY4LTE5LjI2NCA2MS4yNDggNjEuMjQ4IDAgMCAwLTQzLjk2OCAxOS4yNjQgNjguNzM2IDY4LjczNiAwIDAgMCAwIDkzLjE4NHogbTE4OS42MzItMS4wODhjMTIuNjcyIDEzLjQ0IDMwLjUyOCAyMS4yNDggNDguNDQ4IDIxLjI0OHMzNS43MTItNy44MDggNDguMzg0LTIxLjI0OGE3NS41ODQgNzUuNTg0IDAgMCAwIDAtMTAyLjQ2NEE2Ny4zOTIgNjcuMzkyIDAgMCAwIDU3NS4zNiAwYy0xNy45MiAwLTM1Ljc3NiA3LjgwOC00OC40NDggMjEuMjQ4YTc1LjU4NCA3NS41ODQgMCAwIDAgMCAxMDIuNDY0eiBtMTczLjgyNCA4Ni41OTJjMTMuODI0IDE0LjU5MiAzMy4yOCAyMy4xMDQgNTIuNzM2IDIzLjEwNCAxOS41ODQgMCAzOS4wNC04LjUxMiA1Mi44LTIzLjEwNGE4Mi40MzIgODIuNDMyIDAgMCAwIDAtMTExLjc0NCA3My40NzIgNzMuNDcyIDAgMCAwLTUyLjgtMjMuMTY4Yy0xOS41MiAwLTM4LjkxMiA4LjUxMi01Mi43MzYgMjMuMTY4YTgyLjQzMiA4Mi40MzIgMCAwIDAgMCAxMTEuNzQ0eiBtMTI0LjAzMiAxNTguNTI4YzE0Ljk3NiAxNS44NzIgMzYuMDMyIDI1LjA4OCA1Ny4yMTYgMjUuMDg4IDIxLjEyIDAgNDIuMjQtOS4yMTYgNTcuMTUyLTI1LjA4OGE4OS4zNDQgODkuMzQ0IDAgMCAwIDAtMTIxLjA4OCA3OS42MTYgNzkuNjE2IDAgMCAwLTU3LjE1Mi0yNS4wODhjLTIxLjE4NCAwLTQyLjI0IDkuMjE2LTU3LjIxNiAyNS4wODhhODkuMzQ0IDg5LjM0NCAwIDAgMCAwIDEyMS4wODh6IG01MC40MzIgMjA0LjAzMmMxNi4xMjggMTcuMDg4IDM4Ljc4NCAyNy4wMDggNjEuNjMyIDI3LjAwOCAyMi43ODQgMCA0NS40NC05LjkyIDYxLjU2OC0yNy4wMDhhOTYuMjU2IDk2LjI1NiAwIDAgMCAwLTEzMC40MzIgODUuNzYgODUuNzYgMCAwIDAtNjEuNTY4LTI3LjA3MmMtMjIuODQ4IDAtNDUuNDQgOS45ODQtNjEuNjMyIDI3LjA3MmE5Ni4xOTIgOTYuMTkyIDAgMCAwIDAgMTMwLjQzMnoiIGZpbGw9IiM1MTUxNTEiIHAtaWQ9IjIwMzE0Ij48L3BhdGg+PC9zdmc+");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    animation-name: CircleLoading;
+    animation-duration: 2s;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+}
+
+.CodeRunnerEx-CodeHelper div.BackgroundPanel.outcome {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 0.5rem;
+    z-index: 1;
+}
+
+.CodeRunnerEx-CodeHelper .InputSection {
+    position: relative;
+}
+
+.CodeRunnerEx-CodeHelper-Thumbnail,
+.CodeRunnerEx-CodeHelper .InputSection .Thumbnail {
+    opacity: 1;
+}
+
+.CodeRunnerEx-CodeHelper-Thumbnail,
+.CodeRunnerEx-CodeHelper.SimpleMode .InputSection .Thumbnail,
+.CodeRunnerEx-CodeHelper.NormalMode.Collapsed .InputSection  .Thumbnail {
+    display: block;
+    padding: 0.5rem;
+    box-sizing: content-box;
+    white-space: nowrap;
+    opacity: 1;
+}
+
+.CodeRunnerEx-CodeHelper-Thumbnail::before,
+.CodeRunnerEx-CodeHelper .InputSubmitter::before,
+.CodeRunnerEx-CodeHelper .Thumbnail::before,
+.CodeRunnerEx-CodeHelper .Thumbnail::after {
+    content: '';
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.CodeRunnerEx-CodeHelper-Thumbnail::before,
+.CodeRunnerEx-CodeHelper .Thumbnail::before,
+.CodeRunnerEx-CodeHelper .InputSubmitter::before {
+    background-repeat: no-repeat;
+    background-position: 0 center;
+    background-size: contain;
+    background-origin: content-box;
+
+    min-height: 1.8em;
+    min-width: 2em;
+}
+
+.CodeRunnerEx-CodeHelper-Thumbnail::before,
+.CodeRunnerEx-CodeHelper .Thumbnail::before {
+    background-image: url(data:image/svg+xml;base64,PHN2ZyB0PSIxNzI4ODcwNjk3MDMxIiBjbGFzcz0iaWNvbiIgdmlld0JveD0iMCAwIDEwMjQgMTAyNCIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHAtaWQ9IjQ0NTYiIHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIj48cGF0aCBkPSJNNTAxLjgyNCAzMkMzMDMuNTUyIDMyIDE0MS41MDQgMTc2Ljk5MiAxNDEuNTA0IDM1Ny43NmMwIDIzLjcxMiAyLjgxNiA0Ny4xMDQgOC4zMiA2OS44NTZsLTUxLjAwOCAxMTQuMjA4YTMyIDMyIDAgMCAwIDI0LjcwNCA0NC43MzZjNTQuMjcyIDcuNzQ0IDc2LjY3MiAzMS4xNjggNzYuNjcyIDc3LjMxMnYxMTEuNTUyYTY0IDY0IDAgMCAwIDY0IDY0aDIwLjcwNGE2NCA2NCAwIDAgMSA2NCA2NFY5NjBhMzIgMzIgMCAwIDAgMzIgMzJoMzQ1LjZhMzIgMzIgMCAwIDAgMC02NGgtMzEzLjZ2LTI0LjYwOGExMjggMTI4IDAgMCAwLTEyOC0xMjhoLTIwLjczNnYtMTExLjU1MmMwLTY1LjY2NC0zMi4xOTItMTEwLjY4OC05MS4yLTEzMS4xMzZsMzkuODcyLTg5LjI4YTMxLjk2OCAzMS45NjggMCAwIDAgMS41NjgtMjEuNzkyIDIzMy4wODggMjMzLjA4OCAwIDAgMS04Ljg5Ni02My45MDRjMC0xNDMuNzEyIDEzMS45MzYtMjYxLjc2IDI5Ni4zMi0yNjEuNzZzMjk2LjMyIDExOC4wMTYgMjk2LjMyIDI2MS43NmEzMiAzMiAwIDAgMCA2NCAwQzg2Mi4xNDQgMTc2Ljk5MiA3MDAuMDY0IDMyIDUwMS44MjQgMzJ6TTkwNCA0NDhhMzIgMzIgMCAwIDAtMzIgMzJ2MzYwYTMyIDMyIDAgMCAwIDY0IDBWNDgwYTMyIDMyIDAgMCAwLTMyLTMyeiIgcC1pZD0iNDQ1NyI+PC9wYXRoPjxwYXRoIGQ9Ik02NzMuODg4IDQ2Ni42NTZjLTExLjc0NC0yNS41NjgtNDguNDE2LTI0LjY0LTU4LjgxNiAxLjUzNmwtMTMyLjggMzMzLjc2YTMyIDMyIDAgMCAwIDU5LjQ4OCAyMy42OGwzMi42MDgtODEuOTJjMC41NzYgMC4wMzIgMS4wODggMC4zMiAxLjY2NCAwLjMyaDE1NC44NDhsMzguMTc2IDgzLjEwNGEzMS45NjggMzEuOTY4IDAgMSAwIDU4LjE0NC0yNi43MmwtMTUzLjMxMi0zMzMuNzZ6TTU5OS42OCA2ODBsNDcuMjY0LTExOC43MiA1NC41MjggMTE4LjcySDU5OS42OHoiIHAtaWQ9IjQ0NTgiPjwvcGF0aD48L3N2Zz4=);
+}
+.CodeRunnerEx-CodeHelper .InputSubmitter::before {
+    background-image: url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBzdGFuZGFsb25lPSJubyI/PjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+PHN2ZyB0PSIxNzMwNTE4MTExOTE3IiBjbGFzcz0iaWNvbiIgdmlld0JveD0iMCAwIDEwMjQgMTAyNCIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHAtaWQ9IjE5MTIzIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgd2lkdGg9IjIwMCIgaGVpZ2h0PSIyMDAiPjxwYXRoIGQ9Ik04MDggNzZjMTcuNyAwIDMyIDE0LjMgMzIgMzJ2Mzg0YzAgNC40LTMuNiA4LTggOGgtNTZjLTQuNCAwLTgtMy42LTgtOFYxNDhIMjA4djcwNGgyMzJjNC40IDAgOCAzLjYgOCA4djU2YzAgNC40LTMuNiA4LTggOEgxNjhjLTE3LjcgMC0zMi0xNC4zLTMyLTMyVjEwOGMwLTE3LjcgMTQuMy0zMiAzMi0zMmg2NDB6TTY2MS40IDUwMy44YzEuOC0yLjQgNS40LTIuNCA3LjIgMEw3ODggNjU0LjdjMi40IDIuOSAwLjIgNy4zLTMuNiA3LjNINjk5djI1NGMwIDQuNDItMy41OCA4LTggOGgtNTJjLTQuNDIgMC04LTMuNTgtOC04VjY2MmgtODUuNGMtMy44IDAtNi00LjMtMy42LTcuM2wxMTkuNC0xNTAuOXpNNDgwIDQwMGM0LjQgMCA4IDMuNiA4IDh2NDhjMCA0LjQtMy42IDgtOCA4SDI5NmMtNC40IDAtOC0zLjYtOC04di00OGMwLTQuNCAzLjYtOCA4LThoMTg0eiBtMjAwLTE0NGM0LjQgMCA4IDMuNiA4IDh2NDhjMCA0LjQtMy42IDgtOCA4SDI5NmMtNC40IDAtOC0zLjYtOC04di00OGMwLTQuNCAzLjYtOCA4LThoMzg0eiIgcC1pZD0iMTkxMjQiPjwvcGF0aD48L3N2Zz4=");
+}
+
+.CodeRunnerEx-CodeHelper-Thumbnail::after,
+.CodeRunnerEx-CodeHelper.NormalMode .Thumbnail::after {
+    background-image: url(data:image/svg+xml;base64,PHN2ZyB0PSIxNzI4ODcyODk2NTI3IiBjbGFzcz0iaWNvbiIgdmlld0JveD0iMCAwIDEwMjQgMTAyNCIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHAtaWQ9IjM4NzAiIHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIj48cGF0aCBkPSJNMjcwLjkxMiA1MjQuMDk2bDM5NS41ODQgMzQyLjkxMmExNiAxNiAwIDAgMCAyNi40OTYtMTIuMDMyVjE2OS4wMjRhMTYgMTYgMCAwIDAtMjYuNDk2LTEyLjAzMmwtMzk1LjUyIDM0My4wNGExNiAxNiAwIDAgMCAwIDI0LjA2NHoiIGZpbGw9IiMwMDAwMDAiIHAtaWQ9IjM4NzEiPjwvcGF0aD48L3N2Zz4=);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+
+    min-height: 1.8em;
+    min-width: 1em;
+}
+.CodeRunnerEx-CodeHelper-Thumbnail::after,
+.CodeRunnerEx-CodeHelper.NormalMode.Collapsed .Thumbnail::after {
+    background-image: url(data:image/svg+xml;base64,PHN2ZyB0PSIxNzI4ODcyOTQ2MzA3IiBjbGFzcz0iaWNvbiIgdmlld0JveD0iMCAwIDEwMjQgMTAyNCIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHAtaWQ9IjQwMjAiIHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIj48cGF0aCBkPSJNNzUzLjA4OCA0OTkuOTA0TDM1Ny41MDQgMTU2Ljk5MmExNiAxNiAwIDAgMC0yNi40OTYgMTIuMDMyVjg1NS4wNGExNiAxNiAwIDAgMCAyNi40OTYgMTIuMDMybDM5NS41Mi0zNDIuOTEyYTE2IDE2IDAgMCAwIDAtMjQuMTkyeiIgZmlsbD0iIzAwMDAwMCIgcC1pZD0iNDAyMSI+PC9wYXRoPjwvc3ZnPg==);
+}
+
+.CodeRunnerEx-CodeHelper-Thumbnail .ButtonText,
+.CodeRunnerEx-CodeHelper-Thumbnail .ButtonAssoc,
+.CodeRunnerEx-CodeHelper .ButtonText,
+.CodeRunnerEx-CodeHelper .ButtonAssoc {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.CodeRunnerEx-CodeHelper.NormalMode .Thumbnail .ButtonText,
+.CodeRunnerEx-CodeHelper .InputSubmitter .ButtonText {
+    display: none;
+}
+.CodeRunnerEx-CodeHelper.SimpleMode .Thumbnail .ButtonText,
+.CodeRunnerEx-CodeHelper.NormalMode.Collapsed .Thumbnail .ButtonText {
+    display: inline-block;
+}
+
+.CodeRunnerEx-CodeHelper .UsageCountReminder {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin-top: -0.3em;
+    margin-right: -0.3em;
+
+    padding: 0.3em 0.5em;
+    border-radius: 0.3em !important;
+    background-color: #333;
+    color: #fff;
+    font-size: 0.6em;
+    z-index: 20;
+}
+.CodeRunnerEx-CodeHelper.NormalMode .UsageCountReminder {
+
+}
+.CodeRunnerEx-CodeHelper.SimpleMode .UsageCountReminder {
+
+}
+.CodeRunnerEx-CodeHelper .UsageCountReminder.Hidden {
+    display: none;
+}
+
+.CodeRunnerEx-CodeHelper .PanelToggler {
+    display: none;
+}
+.CodeRunnerEx-CodeHelper.SimpleMode .PanelToggler {
+    display: block;
+    cursor: pointer;
+    opacity: 0.3;
+    z-index: 100;
+
+    background-image: url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBzdGFuZGFsb25lPSJubyI/PjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+PHN2ZyB0PSIxNzMxMzMwODc2NTAxIiBjbGFzcz0iaWNvbiIgdmlld0JveD0iMCAwIDEwMjQgMTAyNCIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHAtaWQ9IjUyNTYiIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCI+PHBhdGggZD0iTTk1Ny4wNTYgMzM4LjYyNEM5NTEuODQgMzI3LjI5NiA5NDAuNTEyIDMyMCA5MjggMzIwTDk2IDMyMGMtMTIuNTEyIDAtMjMuODQgNy4yOTYtMjkuMDg4IDE4LjYyNC01LjIxNiAxMS4zNi0zLjMyOCAyNC43MDQgNC43NjggMzQuMjA4bDQxNiA0ODUuMzQ0YzYuMDggNy4xMDQgMTQuOTQ0IDExLjIgMjQuMjg4IDExLjJzMTguMjA4LTQuMDk2IDI0LjI4OC0xMS4ybDQxNi00ODUuMzQ0Qzk2MC40NDggMzYzLjMyOCA5NjIuMjcyIDM0OS45ODQgOTU3LjA1NiAzMzguNjI0eiIgZmlsbD0iIzVENjQ2RiIgcC1pZD0iNTI1NyI+PC9wYXRoPjwvc3ZnPg==");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+
+    height: 0.8rem;
+    width: 0.8rem;
+    margin: 0.2rem;
+}
+.CodeRunnerEx-CodeHelper.SimpleMode .PanelToggler:hover {
+    opacity: 0.7;
+}
+.CodeRunnerEx-CodeHelper.SimpleMode .PanelToggler:active {
+    opacity: 1;
+}
+.CodeRunnerEx-CodeHelper.SimpleMode.Collapsed .PanelToggler {
+    position: absolute;
+    bottom: 0;
+}
+.CodeRunnerEx-CodeHelper.SimpleMode.Expanded .PanelToggler {
+    position: absolute;
+    bottom: 1rem;
+    left: 0.1rem;
+    transform: rotate(180deg);
+}
+.CodeRunnerEx-CodeHelper.SimpleMode.Collapsed .PanelToggler {
+    grid-area: toggler;
+}
+
+.CodeRunnerEx-CodeHelper .Responder .ResponderSection .UserRating {
+    display: block;
+}
+.CodeRunnerEx-CodeHelper .Responder .ResponderSection .UserRating.Hide {
+    display: none;
+}
+
+.CodeRunnerEx-CodeHelper .Responder .UserRatingWidget {
+    display: flex;
+    justify-content: right;
+    align-items: center;
+    gap: 0.4em;
+    font-size: 0.8em;
+    margin: 0.2rem 0.5rem;
+}
+.CodeRunnerEx-CodeHelper .Responder .UserRatingWidget label {
+    opacity: 0.4;
+    padding: 0;
+    margin: 0;
+}
+.CodeRunnerEx-CodeHelper .Responder .UserRatingWidget ul {
+    display: flex;
+    justify-content: end;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    gap: 0.3rem;
+}
+.CodeRunnerEx-CodeHelper .Responder .UserRatingWidget ul .UserRatingLink {
+    display: flex;
+    gap: 0.3em;
+    border-radius: 0.3rem;
+    padding: 0 0.3em;
+    opacity: 0.4;
+}
+.CodeRunnerEx-CodeHelper .Responder .UserRatingWidget.Rated ul .UserRatingLink {
+    display: none;
+}
+.CodeRunnerEx-CodeHelper .Responder .UserRatingWidget.Rated ul .UserRatingLink.Active {
+    display: flex;
+}
+.CodeRunnerEx-CodeHelper .Responder .UserRatingWidget.Unrated ul .UserRatingLink {
+    cursor: pointer;
+    border: 1px solid rgba(0,0,0,0.6);
+}
+.CodeRunnerEx-CodeHelper .Responder .UserRatingWidget.Unrated ul .UserRatingLink.Active {
+    opacity: 0.7;
+}
+.CodeRunnerEx-CodeHelper .Responder .UserRatingWidget.Unrated ul .UserRatingLink:hover {
+    opacity: 1;
+}
+
+.CodeRunnerEx-CodeHelper .Responder .UserRatingWidget ul .UserRatingLink::before {
+    content: '';
+    display: block;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    background-image: url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBzdGFuZGFsb25lPSJubyI/PjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+PHN2ZyB0PSIxNzMwNzcxMjcxODMxIiBjbGFzcz0iaWNvbiIgdmlld0JveD0iMCAwIDEwMjQgMTAyNCIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHAtaWQ9IjQyNDciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCI+PHBhdGggZD0iTTQyLjY2NjY2NyA4OTZoMTcwLjY2NjY2NlYzODRINDIuNjY2NjY3djUxMnogbTkzOC42NjY2NjYtNDY5LjMzMzMzM2MwLTQ2LjkzMzMzMy0zOC40LTg1LjMzMzMzMy04NS4zMzMzMzMtODUuMzMzMzM0aC0yNjguOGw0Mi42NjY2NjctMTk2LjI2NjY2NnYtMTIuOGMwLTE3LjA2NjY2Ny04LjUzMzMzMy0zNC4xMzMzMzMtMTcuMDY2NjY3LTQ2LjkzMzMzNGwtNDYuOTMzMzMzLTQyLjY2NjY2Ni0yODEuNiAyODEuNmMtMTcuMDY2NjY3IDEyLjgtMjUuNiAzNC4xMzMzMzMtMjUuNiA1OS43MzMzMzN2NDI2LjY2NjY2N2MwIDQ2LjkzMzMzMyAzOC40IDg1LjMzMzMzMyA4NS4zMzMzMzMgODUuMzMzMzMzaDM4NGMzNC4xMzMzMzMgMCA2NC0yMS4zMzMzMzMgNzYuOC01MS4ybDEyOC0zMDIuOTMzMzMzYzQuMjY2NjY3LTguNTMzMzMzIDQuMjY2NjY3LTIxLjMzMzMzMyA0LjI2NjY2Ny0yOS44NjY2Njd2LTg1LjMzMzMzM2g0LjI2NjY2NmMwIDQuMjY2NjY3IDAgMCAwIDB6IiBwLWlkPSI0MjQ4Ij48L3BhdGg+PC9zdmc+");
+
+    min-height: 1em;
+    min-width: 1.2em;
+}
+.CodeRunnerEx-CodeHelper .Responder .UserRatingWidget ul .UserRatingLink.Positive::before {
+
+}
+.CodeRunnerEx-CodeHelper .Responder .UserRatingWidget ul .UserRatingLink.Negative::before {
+    transform: scaleY(-1);
+}
+
+.CodeRunnerEx-CodeHelper .Responder .UserRatingWidget ul .UserRatingLink span {
+    padding: 0.2rem 0;
+}
+
+
+.CodeRunnerEx-CodeHelper.Collapsed .Responder {
+    height: 0;
+    max-height: 0;
+}
+.CodeRunnerEx-CodeHelper.Collapsed div.BackgroundPanel.outcome,
+.CodeRunnerEx-CodeHelper.NormalMode.Collapsed .InputSection > *
+{
+    opacity: 0;
+    display: none;
+}
