@@ -9,7 +9,7 @@ providing more features and customization options, mainly including:
 * More settings of CodeRunner-ex plugin, allowing administrator to set the default CodeRunner question type, editor size, grading method and so on. 
 * Encryption Code and test result transfer between client and server, helping to work around security mechanism of some servers.
 * Interactive result table with copy buttons, helping students to copy the long inputs/outputs of testcases to their own codes.
-* AI code helper, helping students to analysis the question and their own codes with LLM model (requiring an AI helper server on backend).
+* AI code helper, helping students to analysis the question and their own codes with LLM model (requiring [Code-AiHelper](https://github.com/CPU-DS/Code-AiHelper) server on backend).
 
 ## Requirement
 
