@@ -28,8 +28,8 @@ Specify the problem that the student must write code for, then define
 a set of tests to be run on the student\'s submission';
 
 // Strings for testcase table tools
-$string['copy_to_clipboard_caption'] = 'Copy';
-$string['copy_to_clipboard_hint'] = 'Copy to clipboard';
+$string['copy_to_clipboard_caption'] = '复制';
+$string['copy_to_clipboard_hint'] = '复制到剪贴板';
 
 // Strings for Code helper
 $string['ask_ai_helper'] = '向 AI helper 提问';
@@ -65,15 +65,15 @@ $string['head_title_inheritedfromcoderunner'] = 'CodeRunner 原始设置';
 $string['head_title_coderunnerexcustom'] = 'CodeRunnerEx 设置';
 $string['head_title_coderunnerex_codehelper'] = 'Code Helper 设置';
 
-$string['copy_button_for_example_table'] = 'Copy button for example table';
+$string['copy_button_for_example_table'] = '在示例表格中提供复制按钮';
 $string['copy_button_for_example_table_desc'] = 'Whether display a copy to clipboard button for example testcases';
-$string['copy_button_for_test_code'] = 'Copy button for test result code';
+$string['copy_button_for_test_code'] = '为测试代码提供复制按钮';
 $string['copy_button_for_test_code_desc'] = 'Whether display a copy to clipboard button for test code in testcase result table';
-$string['copy_button_for_test_input'] = 'Copy button for test result input';
+$string['copy_button_for_test_input'] = '为测试样例输入文本提供复制按钮';
 $string['copy_button_for_test_input_desc'] = 'Whether display a copy to clipboard button for stdin in testcase result table';
-$string['copy_button_for_test_output'] = 'Copy button for test result output';
+$string['copy_button_for_test_output'] = '为测试样例实际输出结果提供复制按钮';
 $string['copy_button_for_test_input_desc'] = 'Whether display a copy to clipboard button for output in testcase result table';
-$string['copy_button_for_test_expected'] = 'Copy button for test result expected';
+$string['copy_button_for_test_expected'] = '为测试样例预期输出提供复制按钮';
 $string['copy_button_for_test_expected_desc'] = 'Whether display a copy to clipboard button for expected output in testcase result table';
 
 
@@ -91,23 +91,23 @@ $string['default_allornothing_desc'] = 'Default all-or-nothing mode';
 $string['encrypt_code_transfer'] = '代码传输加密';
 $string['encrypt_code_transfer_desc'] = '是否在向服务器提交用户代码时进行加密，以避免服务器端潜在的安全限制';
 */
-$string['encrypt_code_and_output_transfer_from_server'] = 'Encrypt code and output transfer from server';
+$string['encrypt_code_and_output_transfer_from_server'] = '加密服务器数据传输';
 $string['encrypt_code_and_output_transfer_from_server_desc'] = 'Whether encrypting code and running output from server, avoid some security issues of server protection';
-$string['encrypt_answer_transfer_from_client'] = 'Encrypt answer transfer from client';
+$string['encrypt_answer_transfer_from_client'] = '加密客户端数据传输';
 $string['encrypt_answer_transfer_from_client_desc'] = 'Whether encrypting user answered code from client to server when transferring, avoid some security issues of server protection';
 
-$string['default_enable_code_helper'] = '默认使用 Code Helper';
+$string['default_enable_code_helper'] = '默认使用 Code AI-Helper';
 $string['default_enable_code_helper_desc'] = 'If set to true, the AI code helper will be displayed when students challenging the question by default';
 
-$string['code_helper_server_url'] = 'Code helper 服务器 URL';
+$string['code_helper_server_url'] = 'Code AI-Helper 服务器 URL';
 $string['code_helper_server_url_desc'] = 'The full URL address of code helper server, including http/https protocol';
-$string['code_helper_server_token'] = 'Code helper 服务器令牌';
+$string['code_helper_server_token'] = 'Code AI-Helper helper 服务器令牌';
 $string['code_helper_server_token_desc'] = 'Token for the code helper AI server';
 $string['code_helper_predefined_asks'] = '预设置的对AI的问题';
 $string['code_helper_predefined_asks_desc'] = 'User selectable questions to AI, one question per line';
 $string['code_helper_disable_custom_asks'] = '禁止用户编辑向 AI 的提问';
 $string['code_helper_disable_custom_asks_desc'] = 'If set to true, students can only select predefined questions to AI';
-$string['code_helper_question_body_clean_patterns'] = 'Moodle question body clean patterns';
+$string['code_helper_question_body_clean_patterns'] = '题干文本清理模式';
 $string['code_helper_question_body_clean_patterns_desc'] = 'One regexp pattern per line, content meet these patterns will be cleaned from question body before transferring to the AI server';
 $string['default_code_helper_omit_code_snippet'] = '在 AI 响应中默认隐藏代码片段';
 $string['default_code_helper_omit_code_snippet_desc'] = 'Hide code snippets from AI response by default';
@@ -120,7 +120,7 @@ $string['code_helper_history_display_mode_desc'] = 'The mode to display AI helpe
 $string['code_helper_history_display_mode_all'] = '全部历史';
 $string['code_helper_history_display_mode_session'] = '仅本次会话';
 $string['code_helper_history_display_mode_active'] = '仅最近问题';
-$string['code_helper_simple_assistant_mode'] = 'Code helper in simple mode';
+$string['code_helper_simple_assistant_mode'] = '极简模式的Code AI-Helper';
 $string['code_helper_simple_assistant_mode_desc'] = 'If checked, the code helper will only provide a single button to ask AI for help (with the first question of the predefined list), without the ability to choose or input user questions';
 
 // Strings for question edit form
