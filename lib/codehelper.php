@@ -248,7 +248,7 @@ EOF;
 
         [$returncode, $responsebody] = HttpUtils::request($serverUrl, HttpUtils::HTTP_POST, $req_data, $headers);
 
-        if ($returncode <= 0) {  // request failed, 0 means unable to access
+        if ($returncode <= 0 || $returncode < 200 || $returncode >= 203) {  // request failed, 0 means unable to access
             throw new Exception("Error: request failed with return code $returncode");
         } else {   // success
             $response_obj = json_decode($responsebody);
