@@ -81,14 +81,37 @@ class qtype_coderunnerex_edit_form extends qtype_coderunner_edit_form {
         $mform = $this->_form;
 
         $invader = invade_parent($this);
+        // old version of CodeRunner has no explicit lang/acelang property definition in qtype_coderunner_edit_form, we need to check here
+        $has_acelang_prop = $invader->has_property('acelang');
+        $has_lang_prop = $invader->has_property('lang');
 
         if (!empty($this->question->options->language)) {
-            $invader->lang = $invader->acelang = $this->question->options->language;
+            if ($has_acelang_prop)
+                $invader->acelang = $this->question->options->language;
+            else
+                $this->acelang = $this->question->options->language;
+
+            if ($has_lang_prop)
+                $invader->lang = $this->question->options->language;
+            else
+                $this->lang = $this->question->options->language;
         } else {
-            $invader->lang = $invader->acelang = '';
+            if ($has_acelang_prop)
+                $invader->acelang = '';
+            else
+                $this->acelang = '';
+
+            if ($has_lang_prop)
+                $invader->lang = '';
+            else
+                $this->lang = '';
         }
-        if (!empty($this->question->options->acelang)) {
-            $invader->acelang = $this->question->options->acelang;
+
+        if (!empty($this->question->options->acelang) && $has_acelang_prop) {
+            if ($has_lang_prop)
+                $invader->acelang = $this->question->options->acelang;
+            else
+                $this->acelang = $this->question->options->acelang;
         }
         $invader->make_error_div($mform);
         $this->make_questiontype_panel($mform);

@@ -27,6 +27,10 @@ class ClassInvader
         $this->reflected = $target;
     }
 
+    public function has_property(string $name) {
+        return $this->reflected->hasProperty($name);
+    }
+
     public function __get(string $name)  // : mixed
     {
         $property = $this->reflected->getProperty($name);

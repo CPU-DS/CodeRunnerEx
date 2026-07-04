@@ -26,6 +26,15 @@ global $CFG;
 global $DB;
 
 /**
+ * Consts of code helper code snippet display mode.
+ */
+class qtype_coderunnerex_code_helper_code_snippet_display_mode {
+    const SHOWN = 0;
+    const HIDDEN = -1;
+    const SHOWN_COLLAPSED = 1;
+}
+
+/**
  * Consts of code helper history display mode.
  */
 class qtype_coderunnerex_code_helper_history_display_mode {

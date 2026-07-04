@@ -170,6 +170,13 @@ $settings->add(new admin_setting_configtext(
 ));
 
 $settings->add(new admin_setting_configtext(
+    "qtype_coderunnerex/code_helper_max_request_length",
+    get_string('code_helper_max_request_length', 'qtype_coderunnerex'),
+    get_string('code_helper_max_request_length_desc', 'qtype_coderunnerex'),
+    0
+));
+
+$settings->add(new admin_setting_configtext(
     "qtype_coderunnerex/default_code_helper_max_usage_count_per_question_attempt",
     get_string('default_code_helper_max_usage_count_per_question_attempt', 'qtype_coderunnerex'),
     get_string('default_code_helper_max_usage_count_per_question_attempt_desc', 'qtype_coderunnerex'),
@@ -204,13 +211,28 @@ $settings->add(new admin_setting_configcheckbox(
     false
 ));
 
+/*
 $settings->add(new admin_setting_configcheckbox(
     "qtype_coderunnerex/default_code_helper_omit_code_snippet",
     get_string('default_code_helper_omit_code_snippet', 'qtype_coderunnerex'),
     get_string('default_code_helper_omit_code_snippet_desc', 'qtype_coderunnerex'),
     false
 ));
+*/
 
+$code_snippet_display_modes = [
+    qtype_coderunnerex_code_helper_code_snippet_display_mode::SHOWN => get_string('code_helper_code_snippet_display_mode_shown', 'qtype_coderunnerex'),
+    qtype_coderunnerex_code_helper_code_snippet_display_mode::SHOWN_COLLAPSED => get_string('code_helper_code_snippet_display_mode_shown_collapsed', 'qtype_coderunnerex'),
+    qtype_coderunnerex_code_helper_code_snippet_display_mode::HIDDEN => get_string('code_helper_code_snippet_display_mode_hidden', 'qtype_coderunnerex')
+];
+
+$settings->add(new admin_setting_configselect(
+    "qtype_coderunnerex/default_code_helper_code_snippet_display_mode",
+    get_string('default_code_helper_code_snippet_display_mode', 'qtype_coderunnerex'),
+    get_string('default_code_helper_code_snippet_display_mode_desc', 'qtype_coderunnerex'),
+    qtype_coderunnerex_code_helper_code_snippet_display_mode::SHOWN,
+    $code_snippet_display_modes
+));
 
 $history_display_modes = [
     qtype_coderunnerex_code_helper_history_display_mode::SHOWN_ALL => get_string('code_helper_history_display_mode_all', 'qtype_coderunnerex'),

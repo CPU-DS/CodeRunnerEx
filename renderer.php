@@ -28,6 +28,8 @@ require_once($CFG->dirroot . '/question/type/coderunner/renderer.php');
 require_once($CFG->dirroot . '/question/type/coderunnerex/lib/classInvader.php');
 require_once($CFG->dirroot . '/question/type/coderunnerex/lib/utils.php');
 
+use qtype_coderunner\constants;
+
 
 /**
  * Util class for the qtype_coderunnerex_renderer.
@@ -371,12 +373,26 @@ class qtype_coderunnerex_renderer extends qtype_coderunner_renderer {
         if (isset($sandboxinfo['jobeserver'])) {
             $jobeserver = $sandboxinfo['jobeserver'];
             $apikey = $sandboxinfo['jobeapikey'];
-            if (qtype_coderunner_sandbox::is_canterbury_server($jobeserver)
-                && (!qtype_coderunner_sandbox::is_using_test_sandbox())) {
-                if ($apikey == constants::JOBE_HOST_DEFAULT_API_KEY) {
-                    $fb .= get_string('jobe_warning_html', 'qtype_coderunner');
-                } else {
-                    $fb .= get_string('jobe_canterbury_html', 'qtype_coderunner');
+
+            $canterbury_server_detect_method_exists = method_exists('qtype_coderunner_sandbox', 'is_canterbury_server');
+            $test_sandbox_detect_method_exists = method_exists('qtype_coderunner_sandbox', 'is_using_test_sandbox');
+
+            if ($canterbury_server_detect_method_exists && $test_sandbox_detect_method_exists) {
+                if (qtype_coderunner_sandbox::is_canterbury_server($jobeserver)
+                    && (!qtype_coderunner_sandbox::is_using_test_sandbox())) {
+                    if ($apikey == constants::JOBE_HOST_DEFAULT_API_KEY) {
+                        $fb .= get_string('jobe_warning_html', 'qtype_coderunner');
+                    } else {
+                        $fb .= get_string('jobe_canterbury_html', 'qtype_coderunner');
+                    }
+                }
+            } else {
+                if ($jobeserver == constants::JOBE_HOST_DEFAULT && $CFG->prefix !== 'b_') {
+                    if ($apikey == constants::JOBE_HOST_DEFAULT_API_KEY) {
+                        $fb .= get_string('jobe_warning_html', 'qtype_coderunner');
+                    } else {
+                        $fb .= get_string('jobe_canterbury_html', 'qtype_coderunner');
+                    }
                 }
             }
         }
@@ -519,6 +535,9 @@ class qtype_coderunnerex_renderer extends qtype_coderunner_renderer {
             $enable_user_rating = boolval(get_config('qtype_coderunnerex', 'code_helper_enable_user_rating'));
             $simple_mode = boolval(get_config('qtype_coderunnerex', 'code_helper_simple_assistant_mode'));
 
+            $question = $qa->get_question();
+            $code_snippet_collapsed = $question->get_code_helper_code_snippet_display_mode() == qtype_coderunnerex_code_helper_code_snippet_display_mode::SHOWN_COLLAPSED;
+
             $jsInitParams = new stdClass();
             $jsInitParams->codeHelperPlaceHolderId = $codehelper_placeholder_id;
             $jsInitParams->questionMetaElemId = $question_attempt_meta_elem_id;
@@ -526,12 +545,13 @@ class qtype_coderunnerex_renderer extends qtype_coderunner_renderer {
             $jsInitParams->aiHelperRequestUrl = $ai_request_url;
             $jsInitParams->aiHelperRateUrl = $ai_request_rate_url;
             $jsInitParams->aiHelperPredefinedQuestions = $predefined_questions;
-            $jsInitParams->aiHelperRemainingUsageCount = $qa->get_question()->get_remaining_code_helper_usage_count_on_attempt($qa);
+            $jsInitParams->aiHelperRemainingUsageCount = $question->get_remaining_code_helper_usage_count_on_attempt($qa);
             $jsInitParams->enableCustomQuestion = $enable_custom_question;
             $jsInitParams->enableUserRating = $enable_user_rating;
             $jsInitParams->readOnly = $options->readonly;
             $jsInitParams->historyDisplayMode = $history_display_mode;
             $jsInitParams->codeHelperInSimpleMode = $simple_mode;
+            $jsInitParams->codeSnippetCollapsed = $code_snippet_collapsed;
             $this->page->requires->js_call_amd(
                 'qtype_coderunnerex/codehelpers',
                 'init',

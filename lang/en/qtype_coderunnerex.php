@@ -54,6 +54,10 @@ $string['codehelper_user_rate_negative'] = 'Unuseful';
 $string['codehelper_user_rate_label_before_rating'] = 'Please rate this feedback';
 $string['codehelper_user_rate_label_after_rating'] = 'Thanks for the rating, you think this feedback is';
 
+$string['codehelper_expand_code_snippet'] = 'Expand Codes';
+$string['codehelper_collapse_code_snippet'] = 'Collapse Codes';
+$string['codehelper_code_snippet_expander_hint'] = 'Although the code snippet is provided by the AI, it is still recommended to avoid copy and paste the codes directly.';
+
 // Tool buttons -- unused
 $string['caption_ask_ai_question_explain'] = 'Question Explanation';
 $string['hint_ask_ai_question_explain'] = 'Ask AI to explain the question requests and give hints';
@@ -111,6 +115,13 @@ $string['code_helper_question_body_clean_patterns'] = 'Moodle question body clea
 $string['code_helper_question_body_clean_patterns_desc'] = 'One regexp pattern per line, content meet these patterns will be cleaned from question body before transferring to the AI server';
 $string['default_code_helper_omit_code_snippet'] = 'Omit code snippets in response';
 $string['default_code_helper_omit_code_snippet_desc'] = 'Hide code snippets from AI response by default';
+
+$string['default_code_helper_code_snippet_display_mode'] = 'Code snippets display mode';
+$string['default_code_helper_code_snippet_display_mode_desc'] = 'Display mode of code snippets responsed by AI';
+$string['code_helper_code_snippet_display_mode_shown'] = 'Displayed';
+$string['code_helper_code_snippet_display_mode_shown_collapsed'] = 'Collapsed';
+$string['code_helper_code_snippet_display_mode_hidden'] = 'Hidden';
+
 $string['default_code_helper_max_usage_count_per_question_attempt'] = 'Max usage count per question attempt';
 $string['default_code_helper_max_usage_count_per_question_attempt_desc'] = 'Max usage count of AI helper for one question attempt, set to 0 for unlimited usage';
 $string['code_helper_enable_user_rating'] = 'Enable user rating';
@@ -122,6 +133,9 @@ $string['code_helper_history_display_mode_session'] = 'Session';
 $string['code_helper_history_display_mode_active'] = 'Latest';
 $string['code_helper_simple_assistant_mode'] = 'Code helper in simple mode';
 $string['code_helper_simple_assistant_mode_desc'] = 'If checked, the code helper will only provide a single button to ask AI for help (with the first question of the predefined list), without the ability to choose or input user questions';
+
+$string['code_helper_max_request_length'] = 'Max request length';
+$string['code_helper_max_request_length_desc'] = 'Max string length of request to AI server';
 
 // Strings for question edit form
 $string['code_helper_enabled'] = 'Enable code helper';

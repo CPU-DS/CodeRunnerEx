@@ -94,10 +94,14 @@ class AiHelperUtils {
         'questionLanguage' => 'python',
         'omitCodeSnippet' => false,
         'token' => null,
-        'questionBody' => '您是一位编程专家，您的任务是根据用户提供的题目、样例与提问，对给出的用户代码进行详细分析，指出其中可能的错误，提供相应的解决思路。请使用中文进行回答，确保您的回答既专业又易于理解。',
-        'sysPrompt' => '', // '您是一位Python编程专家，您的任务是根据用户提供的题目和样例，对给出的Python代码进行详细分析。当您发现代码中存在错误时，需要明确指出错误的具体位置，并提供修正后的正确代码。请使用中文进行回答，确保您的回答既专业又易于理解。请等待用户提供需要审查的代码段，然后根据上述要求进行分析与修改建议。',
+//        'questionBody' => '您是一位编程专家，您的任务是根据用户提供的题目、样例与提问，对给出的用户代码进行详细分析，指出其中可能的错误，提供相应的解决思路。请使用中文进行回答，确保您的回答既专业又易于理解。',
+//        'sysPrompt' => '您是一位Python编程专家，您的任务是根据用户提供的题目和样例，对给出的Python代码进行详细分析。当您发现代码中存在错误时，需要明确指出错误的具体位置，并提供修正后的正确代码。请使用中文进行回答，确保您的回答既专业又易于理解。请等待用户提供需要审查的代码段，然后根据上述要求进行分析与修改建议。',
+        'sysPrompt' => '你是一位经验丰富的{lang}编程专家和技术顾问，擅长分析{lang}题目和学生编写的代码。你的任务是理解题目要求和测试样例，分析学生代码，找出潜在的语法或逻辑错误，提供具体 的错误位置和修复建议，并用专业且易懂的方式帮助学生改进代码。请以markdown格式返回你的答案。',
         'userQuestion' => '',
-        'userCode' => ''
+        'userCode' => '',
+        'max_tokens' => 2048,
+//        'model' => '/dev/shm/merge_model/v2'
+        'model' => '/home/zhangnaiyuan/Code-AiHelper-main/model/merged_model/v2'
     ];
 
     /**
@@ -184,6 +188,96 @@ class AiHelperUtils {
         return $result;
     }
 
+    static protected function generate_request_input_data($data, $max_request_length) {
+        $do_max_request_length_check = $max_request_length > 0;
+        // $data is a object to be converted into a JSON string, including the following fields:
+        // {sysPrompt = null, questionBody = '', testCases = [], userCode, userQuestion = '', questionLanguage = 'python', omitCodeSnippet = false, token = null}
+
+        // fill default values of $data
+        $concrete_data = null;
+        if (!isset($data))
+            $concrete_data = self::DEFAULT_REQUEST_DATA_FIELDS;
+        else {
+            $concrete_data = clone $data;
+            foreach (self::DEFAULT_REQUEST_DATA_FIELDS as $key => $value) {
+                if (!isset($data->$key))
+                    $concrete_data->$key = $value;
+            }
+        }
+
+        // fill lang in the prompt field
+        $prompt = $concrete_data->sysPrompt;
+        $prompt = str_replace('{lang}', $concrete_data->questionLanguage, $prompt);
+
+        $fixed_prompt_strings = <<<EOF
+
+## 题目描述：
+
+## 测试样例：
+
+## 错误代码：
+
+EOF;
+        $used_string_length = strlen($fixed_prompt_strings) + strlen($prompt) + strlen($concrete_data->questionBody) + strlen($concrete_data->userCode);
+        $remaining_string_length = $max_request_length - $used_string_length;
+
+        if ($remaining_string_length > 0 || !$do_max_request_length_check) {
+            // organize the test cases, if test case too long (larger than $max_request_length), we will omit it
+            $testCaseLines = [];
+            if (isset($data->testCases)) {
+                for ($i = 0, $len = count($concrete_data->testCases); $i < $len; ++$i) {
+                    $testcase = $concrete_data->testCases[$i];
+                    $testcase_str = implode("\n", [
+                        "### Sample_Input_$i",
+                        $testcase->stdin,
+                        "### Sample_Output_$i",
+                        $testcase->expected
+                    ]);
+                    $testcase_lengh = strlen($testcase_str);
+                    if ($testcase_lengh <= $remaining_string_length || !$do_max_request_length_check) {
+                        $testCaseLines[] = $testcase_str;
+                        $remaining_string_length -= $testcase_lengh;
+                    }
+                    if ($do_max_request_length_check && $remaining_string_length <= 0)
+                        break;
+                }
+            }
+            $testCaseLines_str = implode("\n", $testCaseLines);
+        }
+
+        // organize the user input data
+        /*
+        $user_prompt = <<<EOF
+$concrete_data->userQuestion
+## 题目：
+$concrete_data->questionBody
+## 样例：
+```$concrete_data->questionLanguage
+$testCaseLines_str
+```
+## 提供的代码：
+```$concrete_data->questionLanguage
+$concrete_data->userCode```
+EOF;
+        */
+        $user_prompt = <<<EOF
+$prompt
+
+## 题目描述：
+$concrete_data->questionBody
+## 测试样例：
+$testCaseLines_str
+## 错误代码：
+$concrete_data->userCode
+EOF;
+
+
+        return (object)[
+            'user_prompt' => $user_prompt,
+            'concrete_data' => $concrete_data
+        ];
+    }
+
     /**
      * Send a request to the AI helper server.
      * If error occurs, an exception will be thrown.
@@ -191,7 +285,8 @@ class AiHelperUtils {
      * @param object $data
      * @return object Result object with fields {response, s_time}.
      */
-    static public function send_request($serverUrl, $data) {
+    static public function send_request($serverUrl, $data, $max_request_length) {
+        /*
         // $data is a object to be converted into a JSON string, including the following fields:
         // {sysPrompt = null, questionBody = '', testCases = [], userCode, userQuestion = '', questionLanguage = 'python', omitCodeSnippet = false, token = null}
 
@@ -223,7 +318,13 @@ class AiHelperUtils {
         }
         $testCaseLines_str = implode("\n", $testCaseLines);
 
+        // fill lang in the prompt field
+        $prompt = $concrete_data->sysPrompt;
+        $prompt = str_replace('{lang}', $concrete_data->questionLanguage, $prompt);
+        */
+
         // organize the user input data
+        /*
         $user_prompt = <<<EOF
 $concrete_data->userQuestion
 ## 题目：
@@ -236,6 +337,23 @@ $testCaseLines_str
 ```$concrete_data->questionLanguage
 $concrete_data->userCode```
 EOF;
+        */
+        /*
+        $user_prompt = <<<EOF
+$prompt
+
+## 题目描述：
+$concrete_data->questionBody
+## 测试样例：
+$testCaseLines_str
+## 错误代码：
+$concrete_data->userCode
+EOF;
+        */
+        $req_input_data = self::generate_request_input_data($data, $max_request_length);
+        $concrete_data = $req_input_data->concrete_data;
+        $user_prompt = $req_input_data->user_prompt;
+
 
         // send data by curl
         $headers = ["Content-type:application/json;charset='utf-8'", "Accept:application/json"];
@@ -243,15 +361,28 @@ EOF;
             $headers[] = "Authorization: Bearer " . $concrete_data->token;
 
         $req_data = new stdClass();
+        /*
         $req_data->system_prompt = $concrete_data->sysPrompt;
         $req_data->user_prompt = $user_prompt;
+        */
+        $req_data->model = $concrete_data->model;
+        $req_data->prompt = $user_prompt;
+        $req_data->max_tokens = $concrete_data->max_tokens;;
+
+//        var_dump($max_request_length);
+//        var_dump($req_data);
+//        return;
 
         [$returncode, $responsebody] = HttpUtils::request($serverUrl, HttpUtils::HTTP_POST, $req_data, $headers);
+
+//        var_dump($responsebody);
 
         if ($returncode <= 0 || $returncode < 200 || $returncode >= 203) {  // request failed, 0 means unable to access
             throw new Exception("Error: request failed with return code $returncode");
         } else {   // success
             $response_obj = json_decode($responsebody);
+
+            /*
             if (isset($response_obj->error)) {   // server returned error
                 throw new Exception(get_string('err_code_helper_server_returns_error', 'qtype_coderunnerex',
                     [ 'error_type' => $response_obj->error->type, 'error_msg' => $response_obj->error->msg]));
@@ -272,6 +403,26 @@ EOF;
                 $result->response = $response_str;
                 $result->s_time = $response_time_str;
                 return $result;
+            }
+            */
+            if (isset($response_obj->choices) && count($response_obj->choices) > 0) {
+                $response_str = $response_obj->choices[0]->text;
+
+                // erase on tailing blanks of lines (but preserve most of the leadings, since they may be indent of program code)
+                $lines = explode("\n", $response_str);
+                $trimmed_lines = [];
+                foreach ($lines as $line) {
+                    $trimmed_lines[] = rtrim(ltrim($line, "\n\r\v\0"));
+                }
+
+                $response_str = implode("\n", $trimmed_lines);
+
+                $result = new stdClass();
+                $result->response = $response_str;
+                return $result;
+            } else {
+                throw new Exception(get_string('err_code_helper_server_returns_error', 'qtype_coderunnerex',
+                    [ 'error_type' => $response_obj->error->type, 'error_msg' => $response_obj->error->msg]));
             }
         }
     }
@@ -489,6 +640,10 @@ EOF;
         return $result;
     }
 
+    static protected function build_request_data_to_ai_server($data) {
+
+    }
+
     /**
      * Do a code helper request on a question attempt.
      * @param string $serverUrl Url of AI helper server.
@@ -591,7 +746,8 @@ EOF;
                 ];
                 // TODO: if we get response from DB, whether should this request be save to db again?
             } else {
-                $result = self::send_request($serverUrl, $req_data);
+                $max_request_length = intval(get_config('qtype_coderunnerex', 'code_helper_max_request_length'));
+                $result = self::send_request($serverUrl, $req_data, $max_request_length);
             }
 
             // no exception in send_request, we got the normal response from server, saving to db
@@ -692,6 +848,14 @@ EOF;
             }
         }
         $push_prev_section();
+
+        // if the first section is without title, it may be the nonsense from model, we just discard it
+        $first_section = $sections[0];
+        if (empty($first_section->title) && (!$first_section->is_code_snippet)) {
+            $first_line = $first_section->contents[0];
+            if (!empty($first_line) && (ord($first_line[0]) <= 127))
+                array_shift($sections);
+        }
 
         return $sections;
     }
@@ -804,7 +968,7 @@ EOF;
                 $passed = ($mode == 'set')?
                     self::check_usage_privileges($question_attempt, $quiz_attempt, $context_module):
                     self::check_review_privileges($question_attempt, $quiz_attempt, $context_module);
-                if (!passed)
+                if (!$passed)
                     throw new Exception(get_string('err_code_helper_user_no_privilege', 'qtype_coderunnerex'));
             }
 

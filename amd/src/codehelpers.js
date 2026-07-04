@@ -327,7 +327,8 @@ define(['qtype_coderunnerex/localresmanager'], function({localResManager}) {
 
     class CodeHelper {
         constructor(doc, { placeHolderId, targetEditorId, questionDataEmbedderId, aiRequestUrl, aiRateUrl, aiHelperPredefinedQuestions, aiHelperRemainingUsageCount,
-            enableCustomQuestion, enableUserRating, readOnly, historyDisplayMode, useSimpleMode }) {
+            enableCustomQuestion, enableUserRating, readOnly, historyDisplayMode, useSimpleMode, codeSnippetCollapsed }) {
+
             this._readOnly = readOnly;  // if readonly, means we are in review mode
             this._historyDisplayMode = historyDisplayMode;  // in review mode, all history will be displayed regardless of this option
             this._simpleMode = useSimpleMode;
@@ -342,6 +343,7 @@ define(['qtype_coderunnerex/localresmanager'], function({localResManager}) {
             this._qMetaData = this._retrieveQuestionMetaData(doc, questionDataEmbedderId);
             this._enableCustomQuestion = enableCustomQuestion;
             this._enableUserRating = enableUserRating;
+            this._codeSnippetCollapsed = codeSnippetCollapsed;
 
             this._aiHelperRecords = new AiHelperDataRecordList();  // stores the question and response of AI helper interactions
             this._aiHelperRecords.onupdate = this.reactAiHelperRecordsUpdate.bind(this);
@@ -397,7 +399,9 @@ define(['qtype_coderunnerex/localresmanager'], function({localResManager}) {
                 'err_code_helper_empty_ask',
                 'codehelper_ai_usage_count_reminder_hint',
                 'codehelper_user_rate_positive',
-                'codehelper_user_rate_negative'
+                'codehelper_user_rate_negative',
+                'codehelper_expand_code_snippet',
+                'codehelper_collapse_code_snippet'
             ]);
 
             const result = doc.createElement('section');
@@ -1056,7 +1060,7 @@ define(['qtype_coderunnerex/localresmanager'], function({localResManager}) {
 
                 const elemResponse = recordElem.getElementsByClassName(CN_CODE_HELPER_AI_RESPONDER_CONTENT_RESPONSE)[0];
                 // elemResponse.innerText = record.response;
-                this._updateAiHelperResponseOnElem(doc, elemResponse, record.response);
+                await this._updateAiHelperResponseOnElem(doc, elemResponse, record.response);
 
                 const elemUserRating = recordElem.getElementsByClassName(CN_CODE_HELPER_AI_RESPONDER_CONTENT_USER_RATING)[0];
                 if (elemUserRating) {
@@ -1081,7 +1085,7 @@ define(['qtype_coderunnerex/localresmanager'], function({localResManager}) {
                     CN_CODE_HELPER_AI_RESPONDER_SECTION_STATE_FULFILLED;
             recordElem.className = CN_CODE_HELPER_AI_RESPONDER_CONTENT_SECTION + ' ' + elemStateClass;
         }
-        _updateAiHelperResponseOnElem(doc, elemResponse, response) {
+        async _updateAiHelperResponseOnElem(doc, elemResponse, response) {
             if (!response) {
                 // empty response, just clear
                 elemResponse.innerText = '';
@@ -1103,6 +1107,63 @@ define(['qtype_coderunnerex/localresmanager'], function({localResManager}) {
                         elemSection.appendChild(elemTitle);
                     }
                     if (section.contents) {
+                        if (!section.is_code_snippet) {
+                            const elemContent = doc.createElement('div');
+                            elemContent.className = section.is_code_snippet?
+                                CN_CODE_HELPER_AI_RESPONDER_CONTENT_RESPONSE_SECTION_CODE:
+                                CN_CODE_HELPER_AI_RESPONDER_CONTENT_RESPONSE_SECTION_CONTENT;
+                            if (section.is_code_omitted)
+                                elemContent.className += ' ' + CN_CODE_HELPER_AI_RESPONDER_CONTENT_RESPONSE_SECTION_CODE_OMITTED;
+                            elemContent.innerText = section.contents.join('\n');
+                            elemSection.appendChild(elemContent);
+                        } else {
+                            const localStrings = await localResManager.getLocalStrings([
+                                'codehelper_expand_code_snippet',
+                                'codehelper_collapse_code_snippet',
+                                'codehelper_code_snippet_expander_hint'
+                            ]);
+                            // is code snippet, we need to provide collapse/expand UI
+                            const elemCodeContent = doc.createElement('details');
+                            elemCodeContent.className = CN_CODE_HELPER_AI_RESPONDER_CONTENT_RESPONSE_SECTION_CODE;
+                            if (!this._codeSnippetCollapsed)
+                                elemCodeContent.setAttribute('open', true);
+
+                            const summaryElem = doc.createElement('summary');
+                            summaryElem.innerHTML = `<span class="${CN_CODE_HELPER_COLLAPSED}" title="${localStrings['codehelper_code_snippet_expander_hint']}">${localStrings['codehelper_expand_code_snippet']}</span><span class="${CN_CODE_HELPER_EXPANDED}">${localStrings['codehelper_collapse_code_snippet']}</span>`;
+
+                            elemCodeContent.appendChild(summaryElem);
+                            const elemCodeWrapper = document.createElement('div');
+                            const elemCodeSnippet = document.createElement('div');
+                            elemCodeSnippet.innerText = section.contents.join('\n');
+                            elemCodeWrapper.appendChild(elemCodeSnippet);
+                            elemCodeContent.appendChild(elemCodeWrapper);
+                            elemSection.appendChild(elemCodeContent);
+
+                            if (section.is_code_snippet && !section.is_code_omitted && window.ace) {
+                                // since coderunner uses ace as editor, we can highlight the code with ace now
+                                const aceOptions = {
+                                    selectionStyle: "text",
+                                    readOnly: true,
+                                    minLines: 2,
+                                    maxLines: 999
+                                };
+                                if (section.code_language)
+                                    aceOptions.mode = this._getAceEditorModeOption(section.code_language);
+
+                                // elemCodeContent.setAttribute('open', true);  // always expand the section first, otherwise the ace editor can not be properly initialized
+
+                                setTimeout(() => {
+                                    // console.log('initialize ace editor', aceOptions);
+                                    // alert(elemContent.innerText);
+                                    const editor = window.ace.edit(elemCodeSnippet, aceOptions);
+                                    editor.session.setValue(section.contents.join('\n') + '\n');  // add a tailing blank line for better display
+
+                                    // if (this._codeSnippetCollapsed)
+                                    //     elemCodeContent.removeAttribute('open');
+                                }, 50);
+                            }
+                        }
+                        /*
                         const elemContent = doc.createElement('div');
                         elemContent.className = section.is_code_snippet?
                             CN_CODE_HELPER_AI_RESPONDER_CONTENT_RESPONSE_SECTION_CODE:
@@ -1111,7 +1172,8 @@ define(['qtype_coderunnerex/localresmanager'], function({localResManager}) {
                             elemContent.className += ' ' + CN_CODE_HELPER_AI_RESPONDER_CONTENT_RESPONSE_SECTION_CODE_OMITTED;
                         elemContent.innerText = section.contents.join('\n');
                         elemSection.appendChild(elemContent);
-
+                        */
+                        /*
                         if (section.is_code_snippet && !section.is_code_omitted && window.ace) {
                             // since coderunner uses ace as editor, we can highlight the code with ace now
                             const aceOptions = {
@@ -1129,6 +1191,7 @@ define(['qtype_coderunnerex/localresmanager'], function({localResManager}) {
                                 editor.session.setValue(section.contents.join('\n') + '\n');  // add a tailing blank line for better display
                             }, 50);
                         }
+                        */
                     }
                     elemResponse.appendChild(elemSection);
                 }
@@ -1239,7 +1302,7 @@ define(['qtype_coderunnerex/localresmanager'], function({localResManager}) {
 
     function init({codeHelperPlaceHolderId, questionMetaElemId, targetEditorId, codeHelperInSimpleMode,
                       aiHelperRequestUrl, aiHelperRateUrl, aiHelperPredefinedQuestions,
-                      aiHelperRemainingUsageCount,
+                      aiHelperRemainingUsageCount, codeSnippetCollapsed,
                       historyDisplayMode, enableCustomQuestion, enableUserRating, readOnly
                   }) {
         return new CodeHelper(document, {
@@ -1252,6 +1315,7 @@ define(['qtype_coderunnerex/localresmanager'], function({localResManager}) {
             aiHelperRemainingUsageCount,
             enableCustomQuestion,
             enableUserRating,
+            codeSnippetCollapsed,
             readOnly,
             historyDisplayMode,
             useSimpleMode: codeHelperInSimpleMode

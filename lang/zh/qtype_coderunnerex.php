@@ -54,6 +54,10 @@ $string['codehelper_user_rate_negative'] = '无用';
 $string['codehelper_user_rate_label_before_rating'] = '您认为以上信息：';
 $string['codehelper_user_rate_label_after_rating'] = '感谢您的反馈，您认为以上信息';
 
+$string['codehelper_expand_code_snippet'] = '显示代码';
+$string['codehelper_collapse_code_snippet'] = '隐藏代码';
+$string['codehelper_code_snippet_expander_hint'] = '尽管AI提供了可行的代码片段，但在进行编码练习时，依然推荐自己独立思考，切勿过于依赖AI的帮助';
+
 // Tool buttons -- unused
 $string['caption_ask_ai_question_explain'] = 'Question Explanation';
 $string['hint_ask_ai_question_explain'] = 'Ask AI to explain the question requests and give hints';
@@ -111,6 +115,13 @@ $string['code_helper_question_body_clean_patterns'] = '题干文本清理模式'
 $string['code_helper_question_body_clean_patterns_desc'] = 'One regexp pattern per line, content meet these patterns will be cleaned from question body before transferring to the AI server';
 $string['default_code_helper_omit_code_snippet'] = '在 AI 响应中默认隐藏代码片段';
 $string['default_code_helper_omit_code_snippet_desc'] = 'Hide code snippets from AI response by default';
+
+$string['default_code_helper_code_snippet_display_mode'] = 'Code snippets display mode';
+$string['default_code_helper_code_snippet_display_mode_desc'] = 'Display mode of code snippets responsed by AI';
+$string['code_helper_code_snippet_display_mode_shown'] = 'Displayed';
+$string['code_helper_code_snippet_display_mode_shown_collapsed'] = 'Collapsed';
+$string['code_helper_code_snippet_display_mode_hidden'] = 'Hidden';
+
 $string['default_code_helper_max_usage_count_per_question_attempt'] = '每个问题尝试中默认最大使用次数';
 $string['default_code_helper_max_usage_count_per_question_attempt_desc'] = 'Max usage count of AI helper for one question attempt, set to 0 for unlimited usage';
 $string['code_helper_enable_user_rating'] = '允许用户评价 AI 响应';
@@ -122,6 +133,9 @@ $string['code_helper_history_display_mode_session'] = '仅本次会话';
 $string['code_helper_history_display_mode_active'] = '仅最近问题';
 $string['code_helper_simple_assistant_mode'] = '极简模式的Code AI-Helper';
 $string['code_helper_simple_assistant_mode_desc'] = 'If checked, the code helper will only provide a single button to ask AI for help (with the first question of the predefined list), without the ability to choose or input user questions';
+
+$string['code_helper_max_request_length'] = 'Code Helper 请求最大长度';
+$string['code_helper_max_request_length_desc'] = '向 AI server 发送的最大字符串长度，设为0则不作限制';
 
 // Strings for question edit form
 $string['code_helper_enabled'] = '允许使用 Code Helper';

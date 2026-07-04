@@ -67,10 +67,20 @@ class qtype_coderunnerex_question extends qtype_coderunner_question {
      * @return bool
      */
     public function is_code_helper_code_snippet_omitted() {
+        /*
         $default_value = boolval(get_config('qtype_coderunnerex', 'default_code_helper_omit_code_snippet'));
         $result = qtype_coderunnerex_inheritable_bool_setting::get_value($this->code_helper_omit_code_snippet, $default_value);
 
         return $result;
+        */
+        $display_mode = $this->get_code_helper_code_snippet_display_mode();
+        return $display_mode == qtype_coderunnerex_code_helper_code_snippet_display_mode::HIDDEN;
+    }
+
+    public function get_code_helper_code_snippet_display_mode() {
+        // TODO: local setting of question is not applied yet
+        $default_value = intval(get_config('qtype_coderunnerex', 'default_code_helper_code_snippet_display_mode'));
+        return $default_value;
     }
 
     /**
@@ -82,13 +92,24 @@ class qtype_coderunnerex_question extends qtype_coderunner_question {
         return qtype_coderunnerex_util::decrypt_string($encrypted_code);
     }
 
+    /*
+     * Get the max length of code helper request.
+     * @return int
+     */
+    /*
+    public function get_concrete_code_helper_max_request_length() {
+        $result = intval(get_config('qtype_coderunnerex', 'code_helper_max_request_length'));
+        return $result;
+    }
+    */
+
     /**
      * Get the max usage count of code helper for this question.
      * @return int
      */
     public function get_concrete_code_helper_max_usage_count_per_question_attempt() {
         $default_value = intval(get_config('qtype_coderunnerex', 'default_code_helper_max_usage_count_per_question_attempt'));
-        $result = qtype_coderunnerex_inheritable_bool_setting::get_value($this->code_helper_max_usage_count_per_question_attempt, $default_value);
+        $result = qtype_coderunnerex_inheritable_int_setting::get_value($this->code_helper_max_usage_count_per_question_attempt, $default_value);
         return $result;
     }
 

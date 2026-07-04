@@ -122,6 +122,24 @@
     white-space: pre;
 }
 
+.CodeRunnerEx-CodeHelper .ResponderContent .ResponderSection .Response .ResponseSection .ResponseSectionCode summary {
+    font-family: 'Segoe UI Symbol', Tahoma, Arial, Helvetica, sans-serif;
+    color: #333;
+    padding: 0.3em 0.5em;
+}
+.CodeRunnerEx-CodeHelper .ResponderContent .ResponderSection .Response .ResponseSection .ResponseSectionCode summary .Collapsed {
+    display: inline;
+}
+.CodeRunnerEx-CodeHelper .ResponderContent .ResponderSection .Response .ResponseSection .ResponseSectionCode summary .Expanded {
+    display: none;
+}
+.CodeRunnerEx-CodeHelper .ResponderContent .ResponderSection .Response .ResponseSection .ResponseSectionCode[open] summary .Collapsed {
+    display: none;
+}
+.CodeRunnerEx-CodeHelper .ResponderContent .ResponderSection .Response .ResponseSection .ResponseSectionCode[open] summary .Expanded {
+    display: inline;
+}
+
 .CodeRunnerEx-CodeHelper .ResponderContent .ResponderSection .Response .ResponseSection .ace_editor {
     border-radius: 0.5em;
 }
@@ -396,4 +414,62 @@
 {
     opacity: 0;
     display: none;
+}
+
+/** Copy buttons in result table **/
+.coderunnerexamples tbody td pre,
+.coderunner-test-results tbody td pre,
+.coderunnerexamples tbody td .CodeRunner-SampleCopyBtn,
+.coderunner-test-results tbody td .CodeRunner-SampleCopyBtn {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.coderunnerexamples tbody td .CodeRunner-SampleCopyBtn,
+.coderunner-test-results tbody td .CodeRunner-SampleCopyBtn {
+    visibility: hidden;
+    margin-left: 0.5em;
+    width: 16px;
+    height: 16px;
+    border: none;
+    background-color: transparent;
+    background-image: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBzdGFuZGFsb25lPSJubyI/PjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+PHN2ZyB0PSIxNjc2MjkzNDUzOTcyIiBjbGFzcz0iaWNvbiIgdmlld0JveD0iMCAwIDEwMjQgMTAyNCIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHAtaWQ9IjI2ODkiIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCI+PHBhdGggZD0iTTc0Ni45MzIgNjk4LjEwOCIgZmlsbD0iI0E5QjdCNyIgcC1pZD0iMjY5MCI+PC9wYXRoPjxwYXRoIGQ9Ik05MjUuNzMxIDI4OC42OThjLTEuMjYxLTEuMTgtMy42MDctMy4yNzItNi45MDItNi4zNDMtNS40ODYtNS4xMTItMTEuNjE1LTEwLjc1OC0xOC4yMzYtMTYuODkxLTE4LjkyMS0xNy41MjYtMzguMDAzLTM1LjAyOC01Ni4wNDYtNTEuMzk3LTIuMDM4LTEuODQ4LTIuMDM4LTEuODM1LTQuMDc3LTMuNjgyLTI0LjA3NS0yMS43OTUtNDQuMTU2LTM5LjU1Ni01OC45OTYtNTIuMDc2LTguNjgyLTcuMzI1LTE1LjUxNy0xMi44MDctMjAuNTM5LTE2LjQyNi0zLjMzMy0yLjQwMi02LjA0My00LjEzLTguNzE1LTUuMzk2LTMuMzY1LTEuNTk1LTYuNDgtMi41NjYtMTAuOTA1LTIuNDgzQzcyOS40NzggMTM0LjIyNyA3MjAgMTQzLjc3IDcyMCAxNTUuNzM0bDAgNDIuNDc1IDAgNDIuNDc1IDAgODQuOTVMNzIwIDM0N2wyMS4yMDUgMEw4OTAgMzQ3bDAgNTk1TDM1OC42ODkgOTQyQzMyMy40MjkgOTQyIDI5NSA5MTMuMTMyIDI5NSA4NzcuOTIyTDI5NSAxNzdsMzYxLjIwNSAwYzExLjczNiAwIDIxLjI1LTkuNzcxIDIxLjI1LTIxLjVzLTkuNTE0LTIxLjUtMjEuMjUtMjEuNWwtMzgyLjUgMEwyNTIgMTM0bDAgMjEuNzM0TDI1MiA4MTNsLTUyLjQyMSAwQzE2Ni42NDYgODEzIDE0MCA3ODYuOTI4IDE0MCA3NTQuNjc4TDE0MCA3Mmw1NjYuMjg2IDBDNzM5LjI5IDcyIDc2NiA5OC4xNTQgNzY2IDEzMC40MDRMNzY2IDEzNGw0MCAwIDAtMy41OTZDODA2IDc2LjU5NiA3NjEuMjcxIDMzIDcwNi4yODYgMzNMMTE5Ljk1OCAzMyAxMDAgMzNsMCAxOS41MDYgMCA3MDIuMTcyQzEwMCA4MDguNDYzIDE0NC42NDIgODUyIDE5OS41NzkgODUyTDI1MiA4NTJsMCAyNS45MjJDMjUyIDkzNi42MTIgMjk5Ljk3OSA5ODQgMzU4LjY4OSA5ODRsNTUyLjUxNSAwTDkzMiA5ODRsMC0yMS4yMzdMOTMyIDMyNS42MzUgOTMyIDMwNGwwLjQzMyAwQzkzMi40MzIgMjk5IDkzMC4xOTYgMjkyLjg3OCA5MjUuNzMxIDI4OC42OTh6TTc2MiAzMDRsMC02My4zMTVMNzYyIDE5OC4yMWwwLTAuMjczYzE0IDExLjQ3OSAzMC4zIDI2LjM2OSA0OS43MTEgNDMuOTQyIDIuMDIyIDEuODMyIDIuMTM2IDEuODMyIDQuMTU3IDMuNjY1IDE3LjkyMyAxNi4yNTkgMzYuOTU3IDMzLjQ5MiA1NS43NzkgNTAuOTI2IDIuODc4IDIuNjY2IDUuNzEzIDUuNTMxIDguMzkxIDcuNTMxTDc2MiAzMDQuMDAxeiIgZmlsbD0iIzI3MjYzNiIgcC1pZD0iMjY5MSI+PC9wYXRoPjxwYXRoIGQ9Ik04MTYuOTM2IDQzNiA0MDcuMjk1IDQzNmMtMTAuOTk2IDAtMTkuOTEgOC43MjctMTkuOTEgMTkuNSAwIDEwLjc3IDguOTE0IDE5LjUgMTkuOTEgMTkuNWw0MDkuNjQxIDBjMTEgMCAxOS45MTQtOC43MyAxOS45MTQtMTkuNUM4MzYuODUgNDQ0LjcyNyA4MjcuOTM2IDQzNiA4MTYuOTM2IDQzNnoiIGZpbGw9IiMyNzI2MzYiIHAtaWQ9IjI2OTIiPjwvcGF0aD48cGF0aCBkPSJNODE2LjkzNiA1NTMgNDA3LjI5NSA1NTNjLTEwLjk5NiAwLTE5LjkxIDguNzI3LTE5LjkxIDE5LjUgMCAxMC43NzQgOC45MTQgMTkuNSAxOS45MSAxOS41bDQwOS42NDEgMGMxMSAwIDE5LjkxNC04LjcyNiAxOS45MTQtMTkuNUM4MzYuODUgNTYxLjcyNyA4MjcuOTM2IDU1MyA4MTYuOTM2IDU1M3oiIGZpbGw9IiMyNzI2MzYiIHAtaWQ9IjI2OTMiPjwvcGF0aD48cGF0aCBkPSJNODE2LjkzNiA2ODkgNDA3LjI5NSA2ODljLTEwLjk5NiAwLTE5LjkxIDguNzI5LTE5LjkxIDE5LjUwMyAwIDEwLjc2OSA4LjkxNCAxOS40OTcgMTkuOTEgMTkuNDk3bDQwOS42NDEgMGMxMSAwIDE5LjkxNC04LjcyOSAxOS45MTQtMTkuNDk3QzgzNi44NSA2OTcuNzI5IDgyNy45MzYgNjg5IDgxNi45MzYgNjg5eiIgZmlsbD0iIzI3MjYzNiIgcC1pZD0iMjY5NCI+PC9wYXRoPjwvc3ZnPg==');
+    background-size: contain;
+    opacity: 0.5;
+}
+
+.coderunnerexamples tbody td .CodeRunner-SampleCopyBtn:hover,
+.coderunnerexamples tbody td .CodeRunner-SampleCopyBtn:active,
+.coderunner-test-results tbody td .CodeRunner-SampleCopyBtn:hover,
+.coderunner-test-results tbody td .CodeRunner-SampleCopyBtn:active {
+    opacity: 1;
+}
+
+.coderunnerexamples tbody td .CodeRunner-SampleCopyBtn span,
+.coderunner-test-results tbody td .CodeRunner-SampleCopyBtn span {
+    display: none;
+}
+
+.coderunnerexamples tbody td:hover .CodeRunner-SampleCopyBtn,
+.coderunnerexamples tbody td:active .CodeRunner-SampleCopyBtn,
+.coderunner-test-results tbody td:hover .CodeRunner-SampleCopyBtn,
+.coderunner-test-results tbody td:active .CodeRunner-SampleCopyBtn {
+    visibility: visible;
+}
+
+.CodeRunner-SampleCopyTextHolder {
+    position: absolute;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    /* Can not copy from a hidden textarea
+    visibility: hidden;
+    visibility: collapse;
+    /*
+    left: -1000px;
+    top: -1000px;
+    */
+    width: 0px;
+    height: 0px;
+    z-index: -10000;
 }
